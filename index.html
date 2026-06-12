@@ -2,6 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9CSV64G72Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9CSV64G72Z');
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Jason Recacho / Revenue Narrative Architect</title>
 <meta name="description" content="Senior product marketing and GTM advisory for early-stage AI, data, and SaaS founders. Positioning, narrative, and partner motion you can actually deploy." />
@@ -210,19 +218,8 @@
   }
   :focus-visible{outline:2px solid var(--garnet);outline-offset:3px}
 </style>
-<!-- Google Analytics GA4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9CSV64G72Z"></script>
+<!-- GA4 event tracking -->
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-9CSV64G72Z', {
-    page_title: 'Recacho Advisory',
-    anonymize_ip: true,
-    cookie_flags: 'SameSite=None;Secure'
-  });
-
-  // Track CTA clicks
   document.addEventListener('DOMContentLoaded', function(){
     document.querySelectorAll('a[href^="mailto"]').forEach(function(el){
       el.addEventListener('click', function(){
@@ -240,9 +237,8 @@
         gtag('event','case_expand',{event_category:'engagement',event_label:title});
       });
     });
-    document.getElementById('moreBtn').addEventListener('click', function(){
-      gtag('event','more_cases_expand',{event_category:'engagement'});
-    });
+    var moreBtn = document.getElementById('moreBtn');
+    if(moreBtn){ moreBtn.addEventListener('click', function(){ gtag('event','more_cases_expand',{event_category:'engagement'}); }); }
   });
 </script>
 </head>
