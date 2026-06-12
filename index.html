@@ -210,6 +210,41 @@
   }
   :focus-visible{outline:2px solid var(--garnet);outline-offset:3px}
 </style>
+<!-- Google Analytics GA4 — replace G-XXXXXXXXXX with your Measurement ID -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX', {
+    page_title: 'Recacho Advisory',
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+
+  // Track CTA clicks
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('a[href^="mailto"]').forEach(function(el){
+      el.addEventListener('click', function(){
+        gtag('event','cta_email_click',{event_category:'engagement',event_label:el.textContent.trim()});
+      });
+    });
+    document.querySelectorAll('a[href*="linkedin"]').forEach(function(el){
+      el.addEventListener('click', function(){
+        gtag('event','cta_linkedin_click',{event_category:'engagement',event_label:'LinkedIn'});
+      });
+    });
+    document.querySelectorAll('.case-head').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var title = btn.querySelector('.ttl') ? btn.querySelector('.ttl').textContent.trim() : 'unknown';
+        gtag('event','case_expand',{event_category:'engagement',event_label:title});
+      });
+    });
+    document.getElementById('moreBtn').addEventListener('click', function(){
+      gtag('event','more_cases_expand',{event_category:'engagement'});
+    });
+  });
+</script>
 </head>
 <body>
 
