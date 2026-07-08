@@ -223,21 +223,55 @@
     document.querySelectorAll('a[href^="mailto"]').forEach(function(el){
       el.addEventListener('click', function(){
         gtag('event','cta_email_click',{event_category:'engagement',event_label:el.textContent.trim()});
+        var ctaLocation = el.closest('.hero') ? 'hero' : 'contact';
+        var emailSubject = '';
+        try { emailSubject = new URL(el.href).searchParams.get('subject') || ''; } catch(e) {}
+        if (typeof pendo !== 'undefined') {
+          pendo.track('contact_email_initiated', {
+            cta_location: ctaLocation,
+            button_text: el.textContent.trim(),
+            email_subject: emailSubject
+          });
+        }
       });
     });
     document.querySelectorAll('a[href*="linkedin"]').forEach(function(el){
       el.addEventListener('click', function(){
         gtag('event','cta_linkedin_click',{event_category:'engagement',event_label:'LinkedIn'});
+        if (typeof pendo !== 'undefined') {
+          pendo.track('linkedin_profile_visited', {
+            link_location: el.closest('.contact') ? 'contact' : 'other',
+            destination_url: el.href
+          });
+        }
       });
     });
     document.querySelectorAll('.case-head').forEach(function(btn){
       btn.addEventListener('click', function(){
         var title = btn.querySelector('.ttl') ? btn.querySelector('.ttl').textContent.trim() : 'unknown';
         gtag('event','case_expand',{event_category:'engagement',event_label:title});
+        if (typeof pendo !== 'undefined') {
+          pendo.track('case_study_explored', {
+            case_title: title,
+            case_index: btn.querySelector('.ix') ? btn.querySelector('.ix').textContent.trim() : 'unknown',
+            case_context: btn.querySelector('.ctx') ? btn.querySelector('.ctx').textContent.trim() : '',
+            is_hidden_case: !!btn.closest('.hidden-cases')
+          });
+        }
       });
     });
     var moreBtn = document.getElementById('moreBtn');
-    if(moreBtn){ moreBtn.addEventListener('click', function(){ gtag('event','more_cases_expand',{event_category:'engagement'}); }); }
+    if(moreBtn){ moreBtn.addEventListener('click', function(){
+      gtag('event','more_cases_expand',{event_category:'engagement'});
+      if (typeof pendo !== 'undefined') {
+        var moreCasesEl = document.getElementById('moreCases');
+        var isExpanded = moreCasesEl && moreCasesEl.classList.contains('show');
+        pendo.track('additional_cases_revealed', {
+          action: isExpanded ? 'expand' : 'collapse',
+          total_cases_now_visible: isExpanded ? 6 : 3
+        });
+      }
+    }); }
   });
 </script>
 </head>
