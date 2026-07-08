@@ -523,7 +523,7 @@ pendo.initialize({
   const moreBtn=document.getElementById('moreBtn');
   const moreCases=document.getElementById('moreCases');
   moreBtn.addEventListener('click',()=>{
-    const show=moreCases.classList.toggle('show');
+    const show=moreCases.classList.toggle('hide');
     moreBtn.setAttribute('aria-expanded',show?'true':'false');
     moreBtn.textContent=show?'Show fewer engagements \u2212':'Show 3 more engagements +';
   });
