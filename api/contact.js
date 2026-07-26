@@ -21,8 +21,11 @@ function allowedOrigins() {
     "https://recachoadvisory.com",
   ]);
 
-  if (process.env.VERCEL_URL) {
-    origins.add(`https://${process.env.VERCEL_URL}`);
+  for (const hostname of [
+    process.env.VERCEL_URL,
+    process.env.VERCEL_BRANCH_URL,
+  ]) {
+    if (hostname) origins.add(`https://${hostname}`);
   }
 
   for (const origin of (process.env.CONTACT_ALLOWED_ORIGINS || "").split(",")) {

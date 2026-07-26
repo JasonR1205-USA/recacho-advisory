@@ -10,6 +10,7 @@ const originalEnvironment = {
   CONTACT_FROM_EMAIL: process.env.CONTACT_FROM_EMAIL,
   CONTACT_ALLOWED_ORIGINS: process.env.CONTACT_ALLOWED_ORIGINS,
   VERCEL_ENV: process.env.VERCEL_ENV,
+  VERCEL_BRANCH_URL: process.env.VERCEL_BRANCH_URL,
 };
 let requestSequence = 10;
 
@@ -47,6 +48,7 @@ beforeEach(() => {
   process.env.CONTACT_ALLOWED_ORIGINS =
     "https://www.recachoadvisory.com";
   process.env.VERCEL_ENV = "production";
+  delete process.env.VERCEL_BRANCH_URL;
 });
 
 after(() => {
@@ -77,6 +79,19 @@ test("silently accepts honeypot submissions without sending", async () => {
 
   assert.equal(response.status, 200);
   assert.equal(providerCalled, false);
+});
+
+test("accepts Vercel's stable branch preview origin", async () => {
+  process.env.VERCEL_BRANCH_URL =
+    "recacho-advisory-git-feature-team.vercel.app";
+
+  const response = await contactHandler.fetch(
+    contactRequest(validBody({ faxNumber: "bot content" }), {
+      Origin: "https://recacho-advisory-git-feature-team.vercel.app",
+    }),
+  );
+
+  assert.equal(response.status, 200);
 });
 
 test("rejects invalid contact data", async () => {
