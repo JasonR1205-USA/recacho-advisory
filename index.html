@@ -6,6 +6,10 @@
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  function getContactAddress(){
+    const [localPart,domain,suffix]=['JasonRecacho','gmail','com'];
+    return `${localPart}@${domain}.${suffix}`;
+  }
   if(['recachoadvisory.com','www.recachoadvisory.com'].includes(window.location.hostname)){
     var analyticsScript=document.createElement('script');
     analyticsScript.async=true;
@@ -271,9 +275,13 @@
 </style>
 <script>
   document.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('a[href^="mailto"]').forEach(function(el){
-      el.addEventListener('click', function(){
+    document.querySelectorAll('[data-contact-link]').forEach(function(el){
+      el.addEventListener('click', function(event){
+        event.preventDefault();
         gtag('event','cta_email_click',{event_category:'engagement',event_label:el.textContent.trim()});
+        const subject=encodeURIComponent(el.dataset.contactSubject||'');
+        const body=encodeURIComponent(el.dataset.contactBody||'');
+        window.location.href=`mailto:${getContactAddress()}?subject=${subject}&body=${body}`;
       });
     });
     document.querySelectorAll('a[href*="linkedin"]').forEach(function(el){
@@ -296,7 +304,7 @@
     <a href="#work">Work</a>
     <a href="#how">How I work</a>
     <a href="#about">About</a>
-    <a class="cta" href="mailto:JasonRecacho@gmail.com?subject=Positioning%20sprint%20inquiry&amp;body=Hi%20Jason%2C%0A%0AI%27d%20like%20to%20talk%20about%3A%0A%0A">Start a sprint</a>
+    <a class="cta" href="#contact" data-contact-link data-contact-subject="Positioning sprint inquiry" data-contact-body="Hi Jason,&#10;&#10;I'd like to talk about:&#10;&#10;">Start a sprint</a>
   </nav>
 </header>
 
@@ -316,7 +324,7 @@
       </p>
       <p class="who"><b>Jason Recacho</b> &nbsp;/&nbsp; Revenue Narrative Architect &nbsp;/&nbsp; Recacho Advisory</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="mailto:JasonRecacho@gmail.com?subject=Positioning%20sprint%20inquiry&amp;body=Hi%20Jason%2C%0A%0AI%27d%20like%20to%20talk%20about%3A%0A%0A">Start a positioning sprint <span class="ar">&rarr;</span></a>
+        <a class="btn btn-primary" href="#contact" data-contact-link data-contact-subject="Positioning sprint inquiry" data-contact-body="Hi Jason,&#10;&#10;I'd like to talk about:&#10;&#10;">Start a positioning sprint <span class="ar">&rarr;</span></a>
         <a class="btn btn-ghost" href="#work">See selected work</a>
       </div>
     </div>
@@ -521,11 +529,11 @@
       <h2 class="big">If your product works and the story doesn't, let's fix the story.</h2>
       <p class="sub">Tell me what's breaking. You'll get an honest senior read on where the go-to-market is actually stuck, no pitch attached.</p>
       <div class="links">
-        <a class="btn btn-primary" href="mailto:JasonRecacho@gmail.com?subject=Positioning%20sprint%20inquiry&amp;body=Hi%20Jason%2C%0A%0AI%27d%20like%20to%20talk%20about%3A%0A%0A">Email me <span class="ar">&rarr;</span></a>
-        <button class="btn btn-ghost" id="copyEmail" type="button" data-email="JasonRecacho@gmail.com">Copy email</button>
+        <a class="btn btn-primary" href="#contact" data-contact-link data-contact-subject="Positioning sprint inquiry" data-contact-body="Hi Jason,&#10;&#10;I'd like to talk about:&#10;&#10;">Email me <span class="ar">&rarr;</span></a>
+        <button class="btn btn-ghost" id="copyEmail" type="button">Copy email</button>
         <a class="btn btn-ghost" href="https://www.linkedin.com/in/jason-recacho-mba" target="_blank" rel="noopener">LinkedIn</a>
       </div>
-      <p class="direct">Prefer your own inbox? <a href="mailto:JasonRecacho@gmail.com">JasonRecacho@gmail.com</a></p>
+      <p class="direct">Prefer your own inbox? Use the contact button above to open a prepared message.</p>
       <span class="copy-status" id="copyStatus" role="status" aria-live="polite"></span>
     </div>
   </section>
@@ -595,11 +603,11 @@
   const copyStatus=document.getElementById('copyStatus');
   copyEmail.addEventListener('click',async()=>{
     try{
-      await navigator.clipboard.writeText(copyEmail.dataset.email);
+      await navigator.clipboard.writeText(getContactAddress());
       copyStatus.textContent='Email address copied.';
       gtag('event','cta_email_copy',{event_category:'engagement'});
     }catch(error){
-      copyStatus.textContent='Copy was blocked. The email address is shown above.';
+      copyStatus.textContent='Copy was blocked. Use a contact button to open your email app.';
     }
   });
 
