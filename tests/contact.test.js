@@ -157,3 +157,35 @@ test("accepts a concise inquiry allowed by the form", async () => {
   assert.equal(response.status, 200);
   assert.equal(providerCalled, true);
 });
+
+test("labels diagnostic applications for the private recipient", async () => {
+  let outboundRequest;
+  globalThis.fetch = async (url, options) => {
+    outboundRequest = { url, options };
+    return new Response(JSON.stringify({ id: "email_test" }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  };
+
+  const response = await contactHandler.fetch(
+    contactRequest(
+      validBody({
+        inquiryType: "diagnostic",
+        message:
+          "Revenue Architecture Diagnostic application\n\nDecision: Should we move upmarket?",
+      }),
+    ),
+  );
+  const outboundBody = JSON.parse(outboundRequest.options.body);
+
+  assert.equal(response.status, 200);
+  assert.equal(
+    outboundBody.subject,
+    "Diagnostic application — Example Company",
+  );
+  assert.match(
+    outboundBody.text,
+    /New Revenue Architecture Diagnostic application/,
+  );
+});

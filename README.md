@@ -2,10 +2,30 @@
 
 Static website for [Recacho Advisory](https://www.recachoadvisory.com/).
 
-The site has two audience paths:
+The site has three audience paths:
 
 - `/` — founder-first Revenue Architecture advisory
+- `/diagnostic.html` — fixed-scope Revenue Architecture Diagnostic and secure application
+- `/diagnostic-sample.html` — fictional sample decision memo
 - `/executive-experience.html` — product marketing leadership experience
+
+## Revenue Architecture Diagnostic
+
+The fixed-scope offer includes:
+
+- $2,500 fixed fee
+- one consequential GTM decision
+- five-business-day delivery after complete inputs
+- review of up to eight artifacts
+- 45-minute kickoff, decision memo, 60-minute readout, and 30-day follow-up
+
+The application submits through `api/contact.js`; it does not expose the
+recipient address or accept file uploads. Operating assets live in `product/`:
+
+- `DIAGNOSTIC_RUBRIC.md`
+- `DELIVERY_PLAYBOOK.md`
+- `DECISION_MEMO_TEMPLATE.md`
+- `outcome-tracker.csv`
 
 ## Local preview
 
