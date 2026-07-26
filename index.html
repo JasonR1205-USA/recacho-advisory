@@ -6,10 +6,6 @@
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  function getContactAddress(){
-    const [localPart,domain,suffix]=['JasonRecacho','gmail','com'];
-    return `${localPart}@${domain}.${suffix}`;
-  }
   if(['recachoadvisory.com','www.recachoadvisory.com'].includes(window.location.hostname)){
     var analyticsScript=document.createElement('script');
     analyticsScript.async=true;
@@ -251,10 +247,27 @@
   .contact{text-align:center;padding:100px 0}
   .contact .big{font-family:"Fraunces",serif;font-weight:500;font-size:clamp(30px,5vw,50px);letter-spacing:-.02em;line-height:1.08;max-width:20ch;margin:0 auto 18px}
   .contact .sub{color:var(--muted);max-width:48ch;margin:0 auto 38px;font-size:16px}
-  .contact .links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-  .contact .direct{margin-top:18px;color:var(--muted);font-size:14px}
-  .contact .direct a{text-decoration:underline;text-underline-offset:3px}
-  .copy-status{display:block;min-height:1.5em;margin-top:6px;color:var(--garnet);font-size:13px}
+  .contact-form{position:relative;max-width:760px;margin:0 auto;padding:32px;border:1px solid var(--line);background:var(--paper-2);text-align:left}
+  .contact-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .form-field{display:flex;flex-direction:column;gap:7px}
+  .form-field.full{grid-column:1/-1}
+  .form-field span{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+  .form-field input,.form-field textarea{width:100%;border:1px solid var(--line);border-radius:0;background:var(--paper);color:var(--ink);font:inherit;font-size:15px;line-height:1.5;padding:12px 14px}
+  .form-field textarea{min-height:150px;resize:vertical}
+  .form-field input::placeholder,.form-field textarea::placeholder{color:#817C74}
+  .form-field input:focus,.form-field textarea:focus{border-color:var(--garnet);outline:2px solid rgba(157,42,57,.16);outline-offset:0}
+  .form-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:22px}
+  .form-actions .btn[disabled]{cursor:wait;opacity:.65;transform:none}
+  .form-note{margin-top:16px;color:var(--muted);font-size:12.5px;line-height:1.55}
+  .form-status{min-height:1.5em;margin-top:12px;color:var(--ink-2);font-size:14px;font-weight:500}
+  .form-status[data-state="success"]{color:#24613B}
+  .form-status[data-state="error"]{color:var(--garnet-deep)}
+  .form-trap{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+  @media(max-width:680px){
+    .contact-form{padding:24px 20px}
+    .contact-form-grid{grid-template-columns:1fr}
+    .form-field.full{grid-column:auto}
+  }
 
   footer{border-top:1px solid var(--line);padding:30px var(--gut);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
   footer .mono{font-size:11px}
@@ -275,13 +288,9 @@
 </style>
 <script>
   document.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('[data-contact-link]').forEach(function(el){
-      el.addEventListener('click', function(event){
-        event.preventDefault();
+    document.querySelectorAll('[data-contact-cta]').forEach(function(el){
+      el.addEventListener('click', function(){
         gtag('event','cta_email_click',{event_category:'engagement',event_label:el.textContent.trim()});
-        const subject=encodeURIComponent(el.dataset.contactSubject||'');
-        const body=encodeURIComponent(el.dataset.contactBody||'');
-        window.location.href=`mailto:${getContactAddress()}?subject=${subject}&body=${body}`;
       });
     });
     document.querySelectorAll('a[href*="linkedin"]').forEach(function(el){
@@ -304,7 +313,7 @@
     <a href="#work">Work</a>
     <a href="#how">How I work</a>
     <a href="#about">About</a>
-    <a class="cta" href="#contact" data-contact-link data-contact-subject="Positioning sprint inquiry" data-contact-body="Hi Jason,&#10;&#10;I'd like to talk about:&#10;&#10;">Start a sprint</a>
+    <a class="cta" href="#contact" data-contact-cta>Start a sprint</a>
   </nav>
 </header>
 
@@ -324,7 +333,7 @@
       </p>
       <p class="who"><b>Jason Recacho</b> &nbsp;/&nbsp; Revenue Narrative Architect &nbsp;/&nbsp; Recacho Advisory</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="#contact" data-contact-link data-contact-subject="Positioning sprint inquiry" data-contact-body="Hi Jason,&#10;&#10;I'd like to talk about:&#10;&#10;">Start a positioning sprint <span class="ar">&rarr;</span></a>
+        <a class="btn btn-primary" href="#contact" data-contact-cta>Start a positioning sprint <span class="ar">&rarr;</span></a>
         <a class="btn btn-ghost" href="#work">See selected work</a>
       </div>
     </div>
@@ -527,14 +536,37 @@
     <div class="wrap rv">
       <div class="mono" style="margin-bottom:22px">06 / Start a conversation</div>
       <h2 class="big">If your product works and the story doesn't, let's fix the story.</h2>
-      <p class="sub">Tell me what's breaking. You'll get an honest senior read on where the go-to-market is actually stuck, no pitch attached.</p>
-      <div class="links">
-        <a class="btn btn-primary" href="#contact" data-contact-link data-contact-subject="Positioning sprint inquiry" data-contact-body="Hi Jason,&#10;&#10;I'd like to talk about:&#10;&#10;">Email me <span class="ar">&rarr;</span></a>
-        <button class="btn btn-ghost" id="copyEmail" type="button">Copy email</button>
-        <a class="btn btn-ghost" href="https://www.linkedin.com/in/jason-recacho-mba" target="_blank" rel="noopener">LinkedIn</a>
-      </div>
-      <p class="direct">Prefer your own inbox? Use the contact button above to open a prepared message.</p>
-      <span class="copy-status" id="copyStatus" role="status" aria-live="polite"></span>
+      <p class="sub">Share the product, what is breaking, and the decision in front of you. Your message is delivered securely without exposing a personal email address.</p>
+      <form class="contact-form" id="contactForm" novalidate>
+        <div class="contact-form-grid">
+          <label class="form-field">
+            <span>Name</span>
+            <input type="text" name="name" autocomplete="name" maxlength="120" required>
+          </label>
+          <label class="form-field">
+            <span>Work email</span>
+            <input type="email" name="email" autocomplete="email" inputmode="email" maxlength="254" required>
+          </label>
+          <label class="form-field full">
+            <span>Company</span>
+            <input type="text" name="company" autocomplete="organization" maxlength="120" required>
+          </label>
+          <label class="form-field full">
+            <span>What would you like to solve?</span>
+            <textarea name="message" maxlength="2000" placeholder="Include the product, the GTM challenge, the decision, and your timing." required></textarea>
+          </label>
+        </div>
+        <div class="form-trap" aria-hidden="true">
+          <label>Leave this field empty <input type="text" name="fax_number" tabindex="-1" autocomplete="off"></label>
+        </div>
+        <input type="hidden" name="started_at" id="contactStartedAt">
+        <div class="form-actions">
+          <button class="btn btn-primary" id="contactSubmit" type="submit">Send inquiry <span class="ar">&rarr;</span></button>
+          <a class="btn btn-ghost" href="https://www.linkedin.com/in/jason-recacho-mba" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+        <p class="form-note">Your information is used only to respond to this inquiry. Do not include passwords, credentials, or confidential files.</p>
+        <p class="form-status" id="contactStatus" role="status" aria-live="polite"></p>
+      </form>
     </div>
   </section>
 
@@ -599,15 +631,63 @@
     moreBtn.textContent=show?'Show fewer engagements \u2212':'Show 3 more engagements +';
   });
 
-  const copyEmail=document.getElementById('copyEmail');
-  const copyStatus=document.getElementById('copyStatus');
-  copyEmail.addEventListener('click',async()=>{
+  const contactForm=document.getElementById('contactForm');
+  const contactSubmit=document.getElementById('contactSubmit');
+  const contactStatus=document.getElementById('contactStatus');
+  const contactStartedAt=document.getElementById('contactStartedAt');
+  const resetContactTimer=()=>{contactStartedAt.value=String(Date.now());};
+  resetContactTimer();
+
+  contactForm.addEventListener('submit',async(event)=>{
+    event.preventDefault();
+    if(!contactForm.reportValidity())return;
+
+    const formData=new FormData(contactForm);
+    const submissionId=globalThis.crypto?.randomUUID
+      ?globalThis.crypto.randomUUID()
+      :`${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+    const payload={
+      name:String(formData.get('name')||''),
+      email:String(formData.get('email')||''),
+      company:String(formData.get('company')||''),
+      message:String(formData.get('message')||''),
+      faxNumber:String(formData.get('fax_number')||''),
+      startedAt:Number(formData.get('started_at')),
+      submissionId,
+      page:window.location.pathname
+    };
+
+    contactSubmit.disabled=true;
+    contactSubmit.setAttribute('aria-busy','true');
+    contactStatus.dataset.state='';
+    contactStatus.textContent='Sending your inquiry securely…';
+    const controller=new AbortController();
+    const timeoutId=window.setTimeout(()=>controller.abort(),15000);
+
     try{
-      await navigator.clipboard.writeText(getContactAddress());
-      copyStatus.textContent='Email address copied.';
-      gtag('event','cta_email_copy',{event_category:'engagement'});
+      const response=await fetch('/api/contact',{
+        method:'POST',
+        headers:{'Accept':'application/json','Content-Type':'application/json'},
+        body:JSON.stringify(payload),
+        signal:controller.signal
+      });
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(result.message||'The inquiry could not be sent.');
+
+      contactForm.reset();
+      resetContactTimer();
+      contactStatus.dataset.state='success';
+      contactStatus.textContent='Thank you. Your inquiry was sent successfully.';
+      gtag('event','contact_form_submit',{event_category:'conversion'});
     }catch(error){
-      copyStatus.textContent='Copy was blocked. Use a contact button to open your email app.';
+      contactStatus.dataset.state='error';
+      contactStatus.textContent=error.name==='AbortError'
+        ?'Sending took too long. Please try again.'
+        :'Your inquiry could not be sent right now. Please try again or connect on LinkedIn.';
+    }finally{
+      window.clearTimeout(timeoutId);
+      contactSubmit.disabled=false;
+      contactSubmit.removeAttribute('aria-busy');
     }
   });
 
