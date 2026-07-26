@@ -4,7 +4,7 @@
 
 - Buyer: founder, CEO, or accountable GTM executive at a seed-to-Series B AI, data, or SaaS company.
 - Trigger: one consequential go-to-market decision due within 60 days.
-- Fixed fee: $2,500.
+- Fee: confirmed in writing after fit.
 - Delivery: five business days after payment, kickoff, and receipt of the complete evidence set.
 - Included: 45-minute kickoff, review of up to eight artifacts, decision memo, 60-minute readout, and one 30-day outcome review.
 - Excluded: campaign production, lead generation, sales outsourcing, implementation, broad organizational transformation, and simultaneous analysis of unrelated decisions.
