@@ -13,7 +13,7 @@ The site has three audience paths:
 
 The fixed-scope offer includes:
 
-- $2,500 fixed fee
+- engagement fee confirmed in writing after fit
 - one consequential GTM decision
 - five-business-day delivery after complete inputs
 - review of up to eight artifacts

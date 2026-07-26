@@ -9,7 +9,7 @@
    - the company has customers, pipeline, or other credible market evidence;
    - the decision fits the diagnostic rather than a broader implementation sprint.
 3. Decline, refer, or rescope when these conditions are not met.
-4. Send the short agreement and $2,500 invoice only after fit is confirmed.
+4. Confirm the engagement fee in writing, then send the short agreement and invoice only after fit is confirmed.
 
 ## Stage 1 — Secure intake
 

@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
       data.get("context") || "None provided",
       "",
       "I understand that this application does not submit confidential files,",
-      "and that the $2,500 fixed fee is invoiced only after fit is confirmed.",
+      "and that the engagement fee is confirmed in writing only after fit is confirmed.",
     ].join("\n");
   }
 
