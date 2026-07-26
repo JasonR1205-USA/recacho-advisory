@@ -175,6 +175,9 @@ export default {
       now - startedAt < 1_500 ||
       now - startedAt > 2 * 60 * 60 * 1000
     ) {
+      console.info("Contact request rejected", {
+        reason: "timing_validation",
+      });
       return jsonResponse(400, {
         ok: false,
         message: "Please refresh the page and try again.",
@@ -189,12 +192,15 @@ export default {
     const submissionId = cleanText(body.submissionId, 80);
 
     if (
-      name.length < 2 ||
+      !name ||
       !isValidEmail(email) ||
-      company.length < 2 ||
-      message.length < 20 ||
+      !company ||
+      !message ||
       !/^[a-z0-9-]{16,80}$/i.test(submissionId)
     ) {
+      console.info("Contact request rejected", {
+        reason: "field_validation",
+      });
       return jsonResponse(400, {
         ok: false,
         message: "Please complete every field with valid information.",

@@ -133,3 +133,27 @@ test("sends validated inquiries only to the configured recipient", async () => {
     /^website-contact-/,
   );
 });
+
+test("accepts a concise inquiry allowed by the form", async () => {
+  let providerCalled = false;
+  globalThis.fetch = async () => {
+    providerCalled = true;
+    return new Response(JSON.stringify({ id: "email_test" }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  };
+
+  const response = await contactHandler.fetch(
+    contactRequest(
+      validBody({
+        name: "J",
+        company: "X",
+        message: "Test",
+      }),
+    ),
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal(providerCalled, true);
+});

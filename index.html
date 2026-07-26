@@ -672,7 +672,13 @@
         signal:controller.signal
       });
       const result=await response.json().catch(()=>({}));
-      if(!response.ok)throw new Error(result.message||'The inquiry could not be sent.');
+      if(!response.ok){
+        contactStatus.dataset.state='error';
+        contactStatus.textContent=typeof result.message==='string'&&result.message
+          ?result.message
+          :'Your inquiry could not be sent right now. Please try again or connect on LinkedIn.';
+        return;
+      }
 
       contactForm.reset();
       resetContactTimer();
