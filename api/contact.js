@@ -187,8 +187,9 @@ export default {
     const name = cleanText(body.name, 120);
     const email = cleanText(body.email, 254);
     const company = cleanText(body.company, 120);
-    const message = cleanText(body.message, 2_000);
+    const message = cleanText(body.message, 6_000);
     const page = cleanText(body.page, 120);
+    const inquiryType = cleanText(body.inquiryType, 40);
     const submissionId = cleanText(body.submissionId, 80);
 
     if (
@@ -226,8 +227,16 @@ export default {
       });
     }
 
+    const isDiagnosticApplication = inquiryType === "diagnostic";
+    const heading = isDiagnosticApplication
+      ? "New Revenue Architecture Diagnostic application"
+      : "New Recacho Advisory website inquiry";
+    const subject = isDiagnosticApplication
+      ? `Diagnostic application — ${company}`
+      : `Website inquiry — ${company}`;
+
     const text = [
-      "New Recacho Advisory website inquiry",
+      heading,
       "",
       `Name: ${name}`,
       `Work email: ${email}`,
@@ -239,7 +248,7 @@ export default {
     ].join("\n");
 
     const html = `
-      <h1>New Recacho Advisory website inquiry</h1>
+      <h1>${heading}</h1>
       <p><strong>Name:</strong> ${escapeHtml(name)}</p>
       <p><strong>Work email:</strong> ${escapeHtml(email)}</p>
       <p><strong>Company:</strong> ${escapeHtml(company)}</p>
@@ -261,7 +270,7 @@ export default {
           from: configuration.from,
           to: [configuration.to],
           reply_to: email,
-          subject: `Website inquiry — ${company}`,
+          subject,
           text,
           html,
         }),

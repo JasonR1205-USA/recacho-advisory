@@ -835,6 +835,36 @@ section {
   line-height: 1.58;
 }
 
+.model-terms {
+  display: grid;
+  gap: 3px;
+  margin-top: 20px;
+  padding-top: 17px;
+  border-top: 1px solid var(--line);
+}
+
+.model-terms strong {
+  color: var(--garnet);
+  font-family: "Fraunces", serif;
+  font-size: 18px;
+}
+
+.model-terms span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.model-link {
+  display: inline-flex;
+  gap: 8px;
+  margin-top: 18px;
+  color: var(--garnet);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 .ongoing-note {
   margin-top: 23px;
   color: var(--muted);
@@ -943,6 +973,10 @@ section {
   margin: 20px auto 0;
   color: var(--muted);
   font-size: 16px;
+}
+
+.contact > .wrap > .cta-actions {
+  justify-content: center;
 }
 
 .contact-form {
