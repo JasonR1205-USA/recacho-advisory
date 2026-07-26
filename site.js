@@ -4,6 +4,11 @@ function gtag() {
   window.dataLayer.push(arguments);
 }
 
+window.getContactAddress = () => {
+  const [localPart, domain, suffix] = ["hello", "recachoadvisory", "com"];
+  return `${localPart}@${domain}.${suffix}`;
+};
+
 const productionHosts = ["recachoadvisory.com", "www.recachoadvisory.com"];
 const isProduction = productionHosts.includes(window.location.hostname);
 
@@ -65,15 +70,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  document.querySelectorAll("[data-copy-email]").forEach((button) => {
+  document.querySelectorAll("[data-contact-link]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const subject = encodeURIComponent(link.dataset.contactSubject || "");
+      const body = encodeURIComponent(link.dataset.contactBody || "");
+      window.location.href = `mailto:${window.getContactAddress()}?subject=${subject}&body=${body}`;
+    });
+  });
+
+  document.querySelectorAll("[data-copy-contact]").forEach((button) => {
     button.addEventListener("click", async () => {
       const status = document.getElementById(button.getAttribute("aria-describedby"));
       try {
-        await navigator.clipboard.writeText(button.dataset.copyEmail);
+        await navigator.clipboard.writeText(window.getContactAddress());
         status.textContent = "Email address copied.";
         gtag("event", "cta_email_copy", { event_category: "engagement" });
       } catch (error) {
-        status.textContent = "Copy was blocked. The email address is shown above.";
+        status.textContent = "Copy was blocked. Use a contact button to open your email app.";
       }
     });
   });
