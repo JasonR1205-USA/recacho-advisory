@@ -397,6 +397,18 @@
   outline-offset: 1px;
 }
 
+.diagnostic-form input[aria-invalid="true"],
+.diagnostic-form select[aria-invalid="true"],
+.diagnostic-form textarea[aria-invalid="true"] {
+  border-color: var(--garnet-deep);
+}
+
+.field-error {
+  color: var(--garnet-deep);
+  font-size: 12px;
+  min-height: 1.2em;
+}
+
 .symptom-fieldset {
   border: 0;
 }

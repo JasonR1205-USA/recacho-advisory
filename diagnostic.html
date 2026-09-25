@@ -282,7 +282,8 @@
             </label>
             <label>
               <span>Company website</span>
-              <input type="url" name="website" autocomplete="url" placeholder="https://" maxlength="240" required>
+              <input type="text" inputmode="url" name="website" autocomplete="url" placeholder="https://" maxlength="240" required pattern="https?://.*" aria-describedby="website-error">
+              <span class="field-error" id="website-error" aria-live="polite"></span>
             </label>
           </div>
 

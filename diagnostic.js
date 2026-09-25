@@ -6,12 +6,199 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !submitButton || !startedAt || !status) return;
 
+  /* ---- Field-error helpers ---- */
+
+  const errorMessages = {
+    name: "Please enter your name.",
+    email: "Please enter a valid work email address.",
+    company: "Please enter your company name.",
+    website: "Please include https:// before your domain.",
+    stage: "Please select a company stage.",
+    decision_deadline: "Please select a decision deadline.",
+    decision: "Please describe the decision your company needs to make.",
+    decision_risk: "Please describe what happens if the company gets it wrong.",
+    evidence_readiness: "Please select your evidence readiness.",
+    consent: "Please confirm you understand the terms.",
+  };
+
+  function getOrCreateErrorSpan(field) {
+    const parent = field.closest("label") || field.parentElement;
+    let span = parent?.querySelector(".field-error");
+    if (!span) {
+      span = document.createElement("span");
+      span.className = "field-error";
+      span.setAttribute("aria-live", "polite");
+      if (field.type === "checkbox") {
+        parent?.appendChild(span);
+      } else {
+        field.insertAdjacentElement("afterend", span);
+      }
+    }
+    return span;
+  }
+
+  function showFieldError(field, message) {
+    field.setAttribute("aria-invalid", "true");
+    field.setCustomValidity(message);
+    const span = getOrCreateErrorSpan(field);
+    span.textContent = message;
+  }
+
+  function clearFieldError(field) {
+    field.removeAttribute("aria-invalid");
+    field.setCustomValidity("");
+    const span = getOrCreateErrorSpan(field);
+    span.textContent = "";
+  }
+
+  function clearAllErrors() {
+    form.querySelectorAll("[aria-invalid]").forEach((f) => {
+      f.removeAttribute("aria-invalid");
+      f.setCustomValidity("");
+    });
+    form.querySelectorAll(".field-error").forEach((span) => {
+      span.textContent = "";
+    });
+  }
+
+  /* ---- URL helpers ---- */
+
+  const bareDomainPattern = /^[\w.-]+\.[a-z]{2,}/i;
+  const protocolPattern = /^https?:\/\//i;
+
+  function normalizeWebsiteValue(input) {
+    const v = input.value.trim();
+    if (v && !protocolPattern.test(v) && bareDomainPattern.test(v)) {
+      input.value = "https://" + v;
+    }
+  }
+
+  /* ---- Auto-prepend https:// on blur ---- */
+
+  const websiteInput = form.querySelector('input[name="website"]');
+  if (websiteInput) {
+    websiteInput.addEventListener("blur", () => {
+      normalizeWebsiteValue(websiteInput);
+      if (websiteInput.getAttribute("aria-invalid") === "true") {
+        const v = websiteInput.value.trim();
+        if (v && protocolPattern.test(v)) {
+          clearFieldError(websiteInput);
+        }
+      }
+    });
+  }
+
+  /* ---- Clear errors on input / change ---- */
+
+  form.addEventListener("input", (e) => {
+    const field = e.target;
+    if (field.getAttribute("aria-invalid") !== "true") return;
+
+    if (field.name === "website") {
+      const v = field.value.trim();
+      if (v && (protocolPattern.test(v) || bareDomainPattern.test(v))) {
+        clearFieldError(field);
+      }
+    } else {
+      field.setCustomValidity("");
+      if (field.validity.valid) {
+        clearFieldError(field);
+      }
+    }
+  });
+
+  form.addEventListener("change", (e) => {
+    const field = e.target;
+    if (field.getAttribute("aria-invalid") !== "true") return;
+
+    if (field.name === "website") {
+      normalizeWebsiteValue(field);
+      const v = field.value.trim();
+      if (v && protocolPattern.test(v)) {
+        clearFieldError(field);
+      }
+    } else {
+      field.setCustomValidity("");
+      if (field.validity.valid) {
+        clearFieldError(field);
+      }
+    }
+  });
+
+  /* ---- Symptoms helper ---- */
+
   function selectedSymptoms() {
     return Array.from(
       form.querySelectorAll('input[name="symptoms"]:checked'),
       (input) => input.value,
     );
   }
+
+  /* ---- Validation ---- */
+
+  function validateApplication() {
+    let firstInvalid = null;
+
+    const fields = form.querySelectorAll(
+      "input:not([type='hidden']):not([type='checkbox']), select, textarea",
+    );
+
+    for (const field of fields) {
+      field.setCustomValidity("");
+
+      if (!field.required) continue;
+
+      if (field.name === "website") {
+        normalizeWebsiteValue(field);
+        const v = field.value.trim();
+        if (!v) {
+          showFieldError(field, "Please enter your company website.");
+          if (!firstInvalid) firstInvalid = field;
+          continue;
+        }
+        if (!protocolPattern.test(v)) {
+          showFieldError(field, "Please include https:// before your domain.");
+          if (!firstInvalid) firstInvalid = field;
+          continue;
+        }
+        clearFieldError(field);
+        continue;
+      }
+
+      if (!field.validity.valid) {
+        showFieldError(field, errorMessages[field.name] || "This field is required.");
+        if (!firstInvalid) firstInvalid = field;
+      } else {
+        clearFieldError(field);
+      }
+    }
+
+    const consent = form.querySelector('input[name="consent"]');
+    if (consent && !consent.checked) {
+      showFieldError(consent, errorMessages.consent);
+      if (!firstInvalid) firstInvalid = consent;
+    } else if (consent) {
+      clearFieldError(consent);
+    }
+
+    if (selectedSymptoms().length === 0) {
+      status.textContent = "Select at least one current revenue signal.";
+      status.dataset.state = "error";
+      if (!firstInvalid) {
+        firstInvalid = form.querySelector('input[name="symptoms"]');
+      }
+    }
+
+    if (firstInvalid) {
+      firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
+      firstInvalid.focus({ preventScroll: true });
+      return false;
+    }
+
+    return true;
+  }
+
+  /* ---- Build application text ---- */
 
   function buildApplicationText() {
     const data = new FormData(form);
@@ -44,18 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ].join("\n");
   }
 
-  function validateApplication() {
-    if (!form.reportValidity()) return false;
-
-    if (selectedSymptoms().length === 0) {
-      status.textContent = "Select at least one current revenue signal.";
-      status.dataset.state = "error";
-      form.querySelector('input[name="symptoms"]')?.focus();
-      return false;
-    }
-
-    return true;
-  }
+  /* ---- Submission ---- */
 
   function resetSubmissionTimer() {
     startedAt.value = String(Date.now());
@@ -112,6 +288,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       form.reset();
+      clearAllErrors();
       resetSubmissionTimer();
       status.dataset.state = "success";
       status.textContent =
